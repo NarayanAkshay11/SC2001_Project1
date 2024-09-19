@@ -1,92 +1,84 @@
-function generateGraph() {
-    const arraySize = parseInt(document.getElementById('array-size').value);
-    const threshold = parseInt(document.getElementById('threshold').value);
+document.addEventListener('DOMContentLoaded', () => {
+    const sections = document.querySelectorAll('.section');
+    const nextButtons = {
+        'description': document.getElementById('next-to-team'),
+        'team': document.getElementById('next-to-algorithms'),
+        'algorithms': document.getElementById('next-to-graph'),
+        'graph': document.getElementById('next-to-conclusion')
+    };
 
-    const data = generateDummyData(arraySize);
+    const showSection = (id) => {
+        sections.forEach(section => section.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    };
 
-    const ctx = document.getElementById('myChart').getContext('2d');
-    if (window.myChart) {
-        window.myChart.destroy(); // Destroy previous chart to avoid overlap
-    }
-    
-    window.myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: data.labels,
-            datasets: [
-                {
-                    label: 'MergeSort',
-                    data: data.mergeSortData,
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    fill: false
-                },
-                {
-                    label: 'Insertion Sort',
-                    data: data.insertionSortData,
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    fill: false
-                },
-                {
-                    label: 'Hybrid Sort',
-                    data: data.hybridSortData,
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    fill: false
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                x: {
-                    beginAtZero: true,
-                    max: arraySize + arraySize * 0.1 // 10% more than input value
-                },
-                y: {
-                    beginAtZero: true
-                }
+    Object.keys(nextButtons).forEach(key => {
+        nextButtons[key].addEventListener('click', () => showSection(key === 'description' ? 'team' : key === 'team' ? 'algorithms' : key === 'algorithms' ? 'graph' : 'conclusion'));
+    });
+
+    const ctx = document.getElementById('graph-canvas').getContext('2d');
+    let chart = null;
+
+    document.getElementById('generate-graph').addEventListener('click', () => {
+        const size = parseInt(document.getElementById('array-size').value, 10);
+        const threshold = parseInt(document.getElementById('threshold').value, 10);
+
+        if (!size || !threshold) {
+            alert('Please enter valid values for array size and threshold.');
+            return;
+        }
+
+        const data = generateGraphData(size, threshold);
+
+        if (chart) chart.destroy();
+
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.sizes,
+                datasets: [{
+                    label: 'Key Comparisons',
+                    data: data.comparisons,
+                    borderColor: '#3498db',
+                    backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                    borderWidth: 2
+                }]
             },
-            plugins: {
-                tooltip: {
-                    mode: 'index',
-                    intersect: false
-                },
-                zoom: {
-                    pan: {
-                        enabled: true,
-                        mode: 'x'
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Array Size'
+                        }
                     },
-                    zoom: {
-                        enabled: true,
-                        mode: 'x',
-                        sensitivity: 3
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Key Comparisons'
+                        },
+                        suggestedMax: Math.max(...data.comparisons) * 1.1
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: (tooltipItem) => `Size: ${tooltipItem.label}, Comparisons: ${tooltipItem.raw}`
+                        }
                     }
                 }
-            },
-            hover: {
-                mode: 'nearest',
-                intersect: true
             }
-        }
+        });
+
+        document.getElementById('conclusion-text').innerText = 
+            `The graph above shows the number of key comparisons performed by the hybrid sorting algorithm for an array of size ${size} with a threshold of ${threshold}.`;
     });
-}
 
-function generateDummyData(arraySize) {
-    const labels = [];
-    const mergeSortData = [];
-    const insertionSortData = [];
-    const hybridSortData = [];
-
-    for (let i = 0; i < arraySize; i += Math.floor(arraySize / 100)) {
-        labels.push(i);
-        mergeSortData.push(Math.log(i + 1) * i); // Dummy data for merge sort
-        insertionSortData.push(i * i); // Dummy data for insertion sort
-        hybridSortData.push((Math.log(i + 1) * i) + i); // Dummy data for hybrid sort
-    }
-
-    return {
-        labels,
-        mergeSortData,
-        insertionSortData,
-        hybridSortData
+    const generateGraphData = (size, threshold) => {
+        // Simulate data generation for the graph
+        // Replace this with actual algorithm data in a real-world scenario
+        const sizes = [size];
+        const comparisons = [Math.random() * 1000];
+        return { sizes, comparisons };
     };
-}
+});
