@@ -1,98 +1,62 @@
-/* Basic Reset */
-* {
+/* General Styling */
+body {
+    font-family: 'Fira Code', monospace;
+    background-color: #1e1e1e;
+    color: #f1f1f1;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Roboto', sans-serif;
-    background-color: #1a1a2e;
-    color: #eaeaea;
-    line-height: 1.6;
-}
-
-h1, h2, h3 {
-    text-align: center;
-    margin-bottom: 20px;
 }
 
 #page-wrapper {
-    width: 90%;
-    max-width: 1200px;
-    margin: 0 auto;
     padding: 20px;
 }
 
-nav {
-    background-color: #16213e;
-    padding: 10px;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+/* Navigation */
+#navbar {
+    background-color: #333;
+    overflow: hidden;
 }
 
-nav ul {
-    display: flex;
-    justify-content: space-around;
+#navbar ul {
+    padding: 0;
+    margin: 0;
     list-style: none;
 }
 
-nav a {
-    color: #eaeaea;
+#navbar ul li {
+    display: inline-block;
+}
+
+#navbar ul li a {
+    color: white;
+    padding: 14px 20px;
     text-decoration: none;
-    font-size: 18px;
 }
 
-nav a:hover {
-    color: #6c63ff;
+#navbar ul li a:hover {
+    background-color: #575757;
 }
 
+/* Section Styling */
 section {
-    margin: 40px 0;
+    margin-bottom: 40px;
 }
 
-.team-member {
-    text-align: center;
-    margin: 20px 0;
+h1, h2, h3 {
+    color: #0cb;
 }
 
-.team-member img {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-}
-
+/* Code Block Styling */
 .code-block {
-    background-color: #16213e;
-    padding: 20px;
-    margin: 20px 0;
-    border-radius: 10px;
+    background-color: #2d2d2d;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
 }
 
-pre {
-    color: #eaeaea;
-}
-
-#graph {
-    text-align: center;
-    margin: 40px 0;
-}
-
-canvas {
-    width: 100%;
-    height: 400px;
-}
-
-button {
-    background-color: #6c63ff;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-button:hover {
-    background-color: #3d3dff;
+pre code {
+    color: #c5c8c6;
+    font-family: 'Fira Code', monospace;
+    white-space: pre-wrap;
+    word-break: break-word;
 }
