@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hybrid Sorting Algorithm Project</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Hybrid Sorting Algorithm: Merge Sort + Insertion Sort</h1>
+        <p>A one-page interactive demo showcasing the performance of Merge Sort, Insertion Sort, and the Hybrid Algorithm</p>
+    </header>
+
+    <section id="description">
+        <h2>Project Description</h2>
+        <p>The hybrid Merge Sort and Insertion Sort algorithm combines the efficiency of Merge Sort for large datasets and Insertion Sort for smaller subarrays. The purpose of this project is to explore how using Insertion Sort for small subarrays can improve the overall performance.</p>
+    </section>
+
+    <section id="algorithms">
+        <h2>Algorithms Explained</h2>
+        <div class="algorithm-container">
+            <h3>Merge Sort</h3>
+            <pre><code>
+function mergeSort(arr) {
+    if (arr.length <= 1) return arr;
+    const mid = Math.floor(arr.length / 2);
+    const left = mergeSort(arr.slice(0, mid));
+    const right = mergeSort(arr.slice(mid));
+    return merge(left, right);
+}
+function merge(left, right) {
+    let result = [], i = 0, j = 0;
+    while (i < left.length && j < right.length) {
+        if (left[i] < right[j]) result.push(left[i++]);
+        else result.push(right[j++]);
+    }
+    return [...result, ...left.slice(i), ...right.slice(j)];
+}
+            </code></pre>
+        </div>
+        <div class="algorithm-container">
+            <h3>Insertion Sort</h3>
+            <pre><code>
+function insertionSort(arr) {
+    for (let i = 1; i < arr.length; i++) {
+        let key = arr[i], j = i - 1;
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key;
+    }
+    return arr;
+}
+            </code></pre>
+        </div>
+        <div class="algorithm-container">
+            <h3>Hybrid Merge + Insertion Sort</h3>
+            <pre><code>
+function hybridSort(arr, threshold) {
+    if (arr.length <= threshold) return insertionSort(arr);
+    const mid = Math.floor(arr.length / 2);
+    const left = hybridSort(arr.slice(0, mid), threshold);
+    const right = hybridSort(arr.slice(mid), threshold);
+    return merge(left, right);
+}
+            </code></pre>
+        </div>
+    </section>
+
+    <section id="graph">
+        <h2>Performance Comparison</h2>
+        <canvas id="comparisonChart"></canvas>
+    </section>
+
+    <section id="conclusion">
+        <h2>Conclusion</h2>
+        <p>The hybrid sorting algorithm proves to be more efficient for smaller datasets. By reducing the overhead of recursive calls in Merge Sort, the hybrid approach takes advantage of Insertion Sort’s efficiency for small subarrays, making it a more practical solution in real-world scenarios.</p>
+    </section>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
