@@ -1,9 +1,15 @@
 function generateGraph() {
-    const arraySize = document.getElementById('array-size').value;
+    const arraySize = parseInt(document.getElementById('array-size').value);
+    const threshold = parseInt(document.getElementById('threshold').value);
+
     const data = generateDummyData(arraySize);
 
-    const ctx = document.getElementById('comparisonChart').getContext('2d');
-    new Chart(ctx, {
+    const ctx = document.getElementById('myChart').getContext('2d');
+    if (window.myChart) {
+        window.myChart.destroy(); // Destroy previous chart to avoid overlap
+    }
+    
+    window.myChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: data.labels,
@@ -30,10 +36,30 @@ function generateGraph() {
         },
         options: {
             responsive: true,
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    max: arraySize + arraySize * 0.1 // 10% more than input value
+                },
+                y: {
+                    beginAtZero: true
+                }
+            },
             plugins: {
                 tooltip: {
                     mode: 'index',
                     intersect: false
+                },
+                zoom: {
+                    pan: {
+                        enabled: true,
+                        mode: 'x'
+                    },
+                    zoom: {
+                        enabled: true,
+                        mode: 'x',
+                        sensitivity: 3
+                    }
                 }
             },
             hover: {
@@ -52,9 +78,9 @@ function generateDummyData(arraySize) {
 
     for (let i = 0; i < arraySize; i += Math.floor(arraySize / 100)) {
         labels.push(i);
-        mergeSortData.push(Math.log(i + 1) * 100);  // Simulated data
-        insertionSortData.push(i * i / 1000);       // Simulated data
-        hybridSortData.push(Math.sqrt(i) * 100);    // Simulated data
+        mergeSortData.push(Math.log(i + 1) * i); // Dummy data for merge sort
+        insertionSortData.push(i * i); // Dummy data for insertion sort
+        hybridSortData.push((Math.log(i + 1) * i) + i); // Dummy data for hybrid sort
     }
 
     return {
@@ -64,4 +90,3 @@ function generateDummyData(arraySize) {
         hybridSortData
     };
 }
-
