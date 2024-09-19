@@ -3,49 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hybrid Sorting Algorithm Project</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Hybrid Sorting Algorithm - MergeSort & Insertion Sort</title>
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js" defer></script>
 </head>
 <body>
-    <header>
-        <h1>Hybrid Sorting Algorithm: Merge Sort + Insertion Sort</h1>
-        <p>A one-page interactive demo showcasing the performance of Merge Sort, Insertion Sort, and the Hybrid Algorithm</p>
-    </header>
+    <div id="page-wrapper">
+        <!-- Navigation -->
+        <nav id="navbar">
+            <ul>
+                <li><a href="#description">Description</a></li>
+                <li><a href="#team">Team Info</a></li>
+                <li><a href="#algorithms">Algorithms</a></li>
+                <li><a href="#code">Code</a></li>
+                <li><a href="#graph">Dynamic Graph</a></li>
+                <li><a href="#conclusion">Conclusion</a></li>
+            </ul>
+        </nav>
 
-    <section id="description">
-        <h2>Project Description</h2>
-        <p>The hybrid Merge Sort and Insertion Sort algorithm combines the efficiency of Merge Sort for large datasets and Insertion Sort for smaller subarrays. The purpose of this project is to explore how using Insertion Sort for small subarrays can improve the overall performance.</p>
-    </section>
+        <!-- Project Description Section -->
+        <section id="description">
+            <h1>Project 1: Integration of MergeSort & Insertion Sort</h1>
+            <p>
+                In Mergesort, when the sizes of subarrays are small, the overhead of many recursive calls makes the algorithm inefficient. 
+                Therefore, we often combine MergeSort with Insertion Sort to come up with a hybrid sorting algorithm for better efficiency. 
+                The idea is to set a small integer S as a threshold for the size of subarrays. Once the size of a subarray in a recursive 
+                call of MergeSort is less than or equal to S, the algorithm switches to Insertion Sort, which is efficient for small-sized input.
+            </p>
+        </section>
 
-    <section id="algorithms">
-        <h2>Algorithms Explained</h2>
-        <div class="algorithm-container">
-            <h3>Merge Sort</h3>
-            <pre><code>
+        <!-- Team Information Section -->
+        <section id="team">
+            <h2>Team Information</h2>
+            <div class="team-member">
+                <img src="team_member_1.jpg" alt="Team Member 1">
+                <h3>Akshay Narayanan</h3>
+                <p>Lead Developer & Algorithm Specialist</p>
+            </div>
+            <div class="team-member">
+                <img src="team_member_2.jpg" alt="Team Member 2">
+                <h3>Member 2</h3>
+                <p>Data Analyst & Researcher</p>
+            </div>
+            <!-- Add more team members as needed -->
+        </section>
+
+        <!-- Algorithms Explanation Section -->
+        <section id="algorithms">
+            <h2>Algorithms</h2>
+            <p>
+                <b>MergeSort:</b> MergeSort is a divide-and-conquer algorithm that divides an array into two halves, recursively sorts them, 
+                and merges the sorted halves. It has an average time complexity of O(n log n).
+            </p>
+            <p>
+                <b>Insertion Sort:</b> Insertion Sort is efficient for small arrays, where elements are sorted in-place. It has an average time 
+                complexity of O(n²).
+            </p>
+            <p>
+                <b>Hybrid Sort (MergeSort + Insertion Sort):</b> This hybrid algorithm switches to Insertion Sort when the subarray size becomes 
+                smaller than a predefined threshold S during MergeSort's recursive calls.
+            </p>
+        </section>
+
+        <!-- Code Showcase Section -->
+        <section id="code">
+            <h2>Code</h2>
+            <div class="code-block">
+                <h3>MergeSort Code:</h3>
+                <pre>
+<code>
 function mergeSort(arr) {
-    if (arr.length <= 1) return arr;
+    if (arr.length < 2) return arr;
     const mid = Math.floor(arr.length / 2);
     const left = mergeSort(arr.slice(0, mid));
     const right = mergeSort(arr.slice(mid));
     return merge(left, right);
 }
 function merge(left, right) {
-    let result = [], i = 0, j = 0;
-    while (i < left.length && j < right.length) {
-        if (left[i] < right[j]) result.push(left[i++]);
-        else result.push(right[j++]);
+    const result = [];
+    while (left.length && right.length) {
+        if (left[0] < right[0]) result.push(left.shift());
+        else result.push(right.shift());
     }
-    return [...result, ...left.slice(i), ...right.slice(j)];
+    return [...result, ...left, ...right];
 }
-            </code></pre>
-        </div>
-        <div class="algorithm-container">
-            <h3>Insertion Sort</h3>
-            <pre><code>
+</code>
+                </pre>
+            </div>
+            <div class="code-block">
+                <h3>Insertion Sort Code:</h3>
+                <pre>
+<code>
 function insertionSort(arr) {
     for (let i = 1; i < arr.length; i++) {
-        let key = arr[i], j = i - 1;
+        let key = arr[i];
+        let j = i - 1;
         while (j >= 0 && arr[j] > key) {
             arr[j + 1] = arr[j];
             j--;
@@ -54,32 +107,50 @@ function insertionSort(arr) {
     }
     return arr;
 }
-            </code></pre>
-        </div>
-        <div class="algorithm-container">
-            <h3>Hybrid Merge + Insertion Sort</h3>
-            <pre><code>
-function hybridSort(arr, threshold) {
-    if (arr.length <= threshold) return insertionSort(arr);
+</code>
+                </pre>
+            </div>
+            <div class="code-block">
+                <h3>Hybrid Sort Code:</h3>
+                <pre>
+<code>
+function hybridSort(arr, S) {
+    if (arr.length <= S) return insertionSort(arr);
     const mid = Math.floor(arr.length / 2);
-    const left = hybridSort(arr.slice(0, mid), threshold);
-    const right = hybridSort(arr.slice(mid), threshold);
+    const left = hybridSort(arr.slice(0, mid), S);
+    const right = hybridSort(arr.slice(mid), S);
     return merge(left, right);
 }
-            </code></pre>
-        </div>
-    </section>
+</code>
+                </pre>
+            </div>
+        </section>
 
-    <section id="graph">
-        <h2>Performance Comparison</h2>
-        <canvas id="comparisonChart"></canvas>
-    </section>
+        <!-- Dynamic Graph Section -->
+        <section id="graph">
+            <h2>Dynamic Graph</h2>
+            <label for="array-size">Enter Array Size (1,000 to 10 Million): </label>
+            <input type="number" id="array-size" min="1000" max="10000000" value="10000">
+            <button onclick="generateGraph()">Generate Graph</button>
 
-    <section id="conclusion">
-        <h2>Conclusion</h2>
-        <p>The hybrid sorting algorithm proves to be more efficient for smaller datasets. By reducing the overhead of recursive calls in Merge Sort, the hybrid approach takes advantage of Insertion Sort’s efficiency for small subarrays, making it a more practical solution in real-world scenarios.</p>
-    </section>
+            <canvas id="comparisonChart"></canvas>
 
-    <script src="scripts.js"></script>
+            <p id="graph-description">
+                The graph above displays the comparison of key comparisons for MergeSort, Insertion Sort, and Hybrid Sort algorithms. 
+                Move your cursor over the graph to see exact key comparisons for each algorithm at different array sizes.
+            </p>
+        </section>
+
+        <!-- Conclusion Section -->
+        <section id="conclusion">
+            <h2>Conclusion</h2>
+            <p>
+                In this project, we successfully integrated MergeSort and Insertion Sort to create a hybrid algorithm that improves efficiency 
+                for small subarrays. Our empirical analysis shows that the hybrid algorithm outperforms regular MergeSort for smaller arrays 
+                by switching to the more efficient Insertion Sort. The optimal threshold S is crucial in determining when to switch between 
+                the two sorting methods, and our tests suggest that it should be tuned based on the size of the input dataset.
+            </p>
+        </section>
+    </div>
 </body>
 </html>
