@@ -3,92 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hybrid Sorting Algorithm</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <title>Sorting Algorithm Comparison</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        input {
+            padding: 10px;
+            font-size: 18px;
+        }
+        canvas {
+            margin: 20px auto;
+            display: block;
+        }
+        code {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            display: block;
+            text-align: left;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
-
     <div class="container">
-        <h1>Hybrid Sorting Algorithm: Merge + Insertion Sort</h1>
+        <h1>Sorting Algorithm Comparison</h1>
+        <p>Enter the array size to compare the performance of Merge Sort, Insertion Sort, and Hybrid Sort:</p>
+        <input type="number" id="arraySizeInput" placeholder="Enter array size (e.g., 10000)">
+        <button onclick="generateGraph()">Generate Graph</button>
 
-        <section class="input-section">
-            <form id="arrayForm">
-                <label for="arraySize">Enter Array Size:</label>
-                <input type="number" id="arraySize" name="arraySize" value="1000" min="1000" max="1000000">
-                <button type="submit">Generate Graph</button>
-            </form>
-        </section>
+        <canvas id="comparisonChart" width="400" height="200"></canvas>
 
-        <section class="graph-section">
-            <h2>Graph: Merge Sort vs Hybrid Sort</h2>
-            <div id="graph"></div>
-        </section>
+        <h2>Code Implementation</h2>
+        <p>Here are the algorithms used in this comparison:</p>
+        <h3>Insertion Sort</h3>
+        <code>
+function insertion_sort(arr, lb, ub) {
+    for (let i = lb + 1; i <= ub; i++) {
+        let current = arr[i];
+        let position = i - 1;
+        while (position >= lb && arr[position] > current) {
+            arr[position + 1] = arr[position];
+            position--;
+        }
+        arr[position + 1] = current;
+    }
+}
+        </code>
 
-        <section class="code-block-section">
-            <h2>Code for Hybrid Sorting Algorithm</h2>
-            <pre>
-                <code>
-# Hybrid Sort Algorithm (Merge + Insertion)
-class SortingAlgorithms:
-    def __init__(self, threshold=20):
-        self.comparisons = 0
-        self.threshold = threshold
+        <h3>Merge Sort</h3>
+        <code>
+function merge_sort(arr) {
+    if (arr.length < 2) return arr;
+    let mid = Math.floor(arr.length / 2);
+    let left = merge_sort(arr.slice(0, mid));
+    let right = merge_sort(arr.slice(mid));
+    return merge(left, right);
+}
 
-    def insertion_sort(self, arr, low, high):
-        for idx in range(low + 1, high + 1):
-            current_value = arr[idx]
-            position = idx - 1
-            while position >= low and arr[position] > current_value:
-                arr[position + 1] = arr[position]
-                position -= 1
-                self.comparisons += 1
-            arr[position + 1] = current_value
+function merge(left, right) {
+    let result = [], i = 0, j = 0;
+    while (i < left.length && j < right.length) {
+        if (left[i] < right[j]) {
+            result.push(left[i++]);
+        } else {
+            result.push(right[j++]);
+        }
+    }
+    return result.concat(left.slice(i)).concat(right.slice(j));
+}
+        </code>
 
-    def merge_sort(self, arr):
-        self.recursive_merge(arr, 0, len(arr) - 1)
-
-    def recursive_merge(self, arr, left, right):
-        if left < right:
-            mid = (left + right) // 2
-            self.recursive_merge(arr, left, mid)
-            self.recursive_merge(arr, mid + 1, right)
-            self.merge(arr, left, mid, right)
-
-    def merge(self, arr, left, mid, right):
-        temp = []
-        i, j = left, mid + 1
-        while i <= mid and j <= right:
-            self.comparisons += 1
-            if arr[i] <= arr[j]:
-                temp.append(arr[i])
-                i += 1
-            else:
-                temp.append(arr[j])
-                j += 1
-        while i <= mid:
-            temp.append(arr[i])
-            i += 1
-        while j <= right:
-            temp.append(arr[j])
-            j += 1
-        for idx in range(len(temp)):
-            arr[left + idx] = temp[idx]
-
-    def hybrid_sort(self, arr, left, right):
-        if (right - left + 1) <= self.threshold:
-            self.insertion_sort(arr, left, right)
-        else:
-            if left < right:
-                mid = (left + right) // 2
-                self.hybrid_sort(arr, left, mid)
-                self.hybrid_sort(arr, mid + 1, right)
-                self.merge(arr, left, mid, right)
-                </code>
-            </pre>
-        </section>
+        <h3>Hybrid Sort</h3>
+        <code>
+function hybrid_sort(arr, threshold) {
+    if (arr.length <= threshold) {
+        return insertion_sort(arr, 0, arr.length - 1);
+    } else {
+        let mid = Math.floor(arr.length / 2);
+        let left = hybrid_sort(arr.slice(0, mid), threshold);
+        let right = hybrid_sort(arr.slice(mid), threshold);
+        return merge(left, right);
+    }
+}
+        </code>
     </div>
 
-    <script src="scripts.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        function generateGraph() {
+            const arraySize = document.getElementById('arraySizeInput').value;
+            if (!arraySize) {
+                alert('Please enter a valid array size.');
+                return;
+            }
+
+            const mergeSortComparisons = Math.log2(arraySize) * arraySize; // Approximation
+            const insertionSortComparisons = (arraySize * (arraySize - 1)) / 2; // Worst-case comparisons
+            const hybridSortComparisons = mergeSortComparisons - (Math.log2(arraySize) * 100); // Hybrid sort approx
+
+            const ctx = document.getElementById('comparisonChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Merge Sort', 'Insertion Sort', 'Hybrid Sort'],
+                    datasets: [{
+                        label: 'Number of Comparisons',
+                        data: [mergeSortComparisons, insertionSortComparisons, hybridSortComparisons],
+                        borderColor: 'rgb(75, 192, 192)',
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: Math.max(mergeSortComparisons, insertionSortComparisons, hybridSortComparisons) * 1.1
+                        }
+                    },
+                    responsive: true
+                }
+            });
+        }
+    </script>
 </body>
 </html>
