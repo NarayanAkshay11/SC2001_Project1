@@ -4,133 +4,167 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sorting Algorithm Comparison</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        header {
+            background: #007bff;
+            color: white;
+            padding: 10px 0;
             text-align: center;
-            padding: 20px;
         }
-        .container {
+        main {
             max-width: 800px;
-            margin: 0 auto;
-        }
-        input {
-            padding: 10px;
-            font-size: 18px;
-        }
-        canvas {
             margin: 20px auto;
-            display: block;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        code {
-            background-color: #f5f5f5;
+        h1, h2, h3 {
+            text-align: center;
+        }
+        pre {
+            background: #272c34;
+            color: #fff;
             padding: 10px;
             border-radius: 5px;
-            display: block;
-            text-align: left;
-            margin-bottom: 20px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        input[type="number"], button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            background: #007bff;
+            color: white;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+        .graph-container {
+            position: relative;
+            height: 400px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <header>
         <h1>Sorting Algorithm Comparison</h1>
-        <p>Enter the array size to compare the performance of Merge Sort, Insertion Sort, and Hybrid Sort:</p>
-        <input type="number" id="arraySizeInput" placeholder="Enter array size (e.g., 10000)">
-        <button onclick="generateGraph()">Generate Graph</button>
-
-        <canvas id="comparisonChart" width="400" height="200"></canvas>
-
-        <h2>Code Implementation</h2>
-        <p>Here are the algorithms used in this comparison:</p>
+    </header>
+    <main>
+        <h2>Project 1: Integration of Mergesort & Insertion Sort</h2>
+        <p>In Mergesort, when the sizes of subarrays are small, the overhead of many recursive calls makes the algorithm inefficient. Therefore, we combine Mergesort with Insertion Sort to create a hybrid sorting algorithm for better efficiency. This involves setting a small integer S as a threshold for the size of subarrays. Once the size of a subarray in a recursive call of Mergesort is less than or equal to S, the algorithm switches to Insertion Sort, which is efficient for small-sized input.</p>
+        
+        <h2>Algorithm Comparisons</h2>
         <h3>Insertion Sort</h3>
-        <code>
-function insertion_sort(arr, lb, ub) {
-    for (let i = lb + 1; i <= ub; i++) {
-        let current = arr[i];
-        let position = i - 1;
-        while (position >= lb && arr[position] > current) {
-            arr[position + 1] = arr[position];
-            position--;
-        }
-        arr[position + 1] = current;
-    }
-}
-        </code>
-
+        <p>Insertion Sort is a simple sorting algorithm that builds a sorted array one item at a time. It is efficient for small data sets and can be implemented with minimal space. The time complexity is O(n^2) in the worst case.</p>
+        
         <h3>Merge Sort</h3>
-        <code>
-function merge_sort(arr) {
-    if (arr.length < 2) return arr;
-    let mid = Math.floor(arr.length / 2);
-    let left = merge_sort(arr.slice(0, mid));
-    let right = merge_sort(arr.slice(mid));
-    return merge(left, right);
-}
-
-function merge(left, right) {
-    let result = [], i = 0, j = 0;
-    while (i < left.length && j < right.length) {
-        if (left[i] < right[j]) {
-            result.push(left[i++]);
-        } else {
-            result.push(right[j++]);
-        }
-    }
-    return result.concat(left.slice(i)).concat(right.slice(j));
-}
-        </code>
-
+        <p>Merge Sort is a divide-and-conquer algorithm that sorts arrays by recursively splitting them into halves, sorting each half, and merging them back together. It has a time complexity of O(n log n), making it efficient for large data sets.</p>
+        
         <h3>Hybrid Sort</h3>
-        <code>
-function hybrid_sort(arr, threshold) {
-    if (arr.length <= threshold) {
-        return insertion_sort(arr, 0, arr.length - 1);
-    } else {
-        let mid = Math.floor(arr.length / 2);
-        let left = hybrid_sort(arr.slice(0, mid), threshold);
-        let right = hybrid_sort(arr.slice(mid), threshold);
-        return merge(left, right);
-    }
-}
-        </code>
-    </div>
+        <p>The Hybrid Sort combines Merge Sort and Insertion Sort, applying Insertion Sort for small subarrays (defined by a threshold S). This approach takes advantage of the efficiency of Insertion Sort for small sizes while maintaining the O(n log n) time complexity of Merge Sort for larger sizes.</p>
+
+        <h2>Code Snippets</h2>
+        <pre><code>class InsertionSort:
+    ...
+</code></pre>
+        <pre><code>class MergeSort:
+    ...
+</code></pre>
+        <pre><code>class HybridSort(MergeSort):
+    ...
+</code></pre>
+
+        <h2>Input Size for Analysis</h2>
+        <input type="number" id="sizeInput" placeholder="Enter array size (1000 to 10 million)">
+        <button id="analyzeButton">Analyze Algorithms</button>
+
+        <div class="graph-container">
+            <canvas id="comparisonGraph"></canvas>
+        </div>
+    </main>
+    <footer>
+        <p>Team: John Doe, Jane Smith, Alice Johnson</p>
+        <p>Course: CS101 - Introduction to Algorithms</p>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        function generateGraph() {
-            const arraySize = document.getElementById('arraySizeInput').value;
-            if (!arraySize) {
-                alert('Please enter a valid array size.');
+        const ctx = document.getElementById('comparisonGraph').getContext('2d');
+        let chart;
+
+        document.getElementById('analyzeButton').addEventListener('click', async () => {
+            const size = document.getElementById('sizeInput').value;
+            if (size < 1000 || size > 10000000) {
+                alert('Please enter a valid array size between 1000 and 10 million.');
                 return;
             }
+            await analyzeAlgorithms(size);
+        });
 
-            const mergeSortComparisons = Math.log2(arraySize) * arraySize; // Approximation
-            const insertionSortComparisons = (arraySize * (arraySize - 1)) / 2; // Worst-case comparisons
-            const hybridSortComparisons = mergeSortComparisons - (Math.log2(arraySize) * 100); // Hybrid sort approx
+        async function analyzeAlgorithms(size) {
+            const response = await fetch('/api/analyze?size=' + size);
+            const data = await response.json();
 
-            const ctx = document.getElementById('comparisonChart').getContext('2d');
-            new Chart(ctx, {
+            if (chart) {
+                chart.destroy();
+            }
+
+            chart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['Merge Sort', 'Insertion Sort', 'Hybrid Sort'],
-                    datasets: [{
-                        label: 'Number of Comparisons',
-                        data: [mergeSortComparisons, insertionSortComparisons, hybridSortComparisons],
-                        borderColor: 'rgb(75, 192, 192)',
-                        borderWidth: 2,
-                        fill: false,
-                        tension: 0.1
-                    }]
+                    labels: ['Insertion', 'Merge', 'Hybrid'],
+                    datasets: [
+                        {
+                            label: 'Insertion Sort Comparisons',
+                            data: data.insertion.map(item => item[0]),
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            fill: false,
+                        },
+                        {
+                            label: 'Merge Sort Comparisons',
+                            data: data.merge.map(item => item[0]),
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            fill: false,
+                        },
+                        {
+                            label: 'Hybrid Sort Comparisons',
+                            data: data.hybrid.map(item => item[0]),
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            fill: false,
+                        }
+                    ]
                 },
                 options: {
                     scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Array Size'
+                            }
+                        },
                         y: {
-                            beginAtZero: true,
-                            max: Math.max(mergeSortComparisons, insertionSortComparisons, hybridSortComparisons) * 1.1
+                            title: {
+                                display: true,
+                                text: 'Number of Comparisons'
+                            }
                         }
-                    },
-                    responsive: true
+                    }
                 }
             });
         }
