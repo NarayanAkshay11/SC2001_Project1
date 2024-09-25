@@ -3,95 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sorting Algorithms</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Hybrid Sorting Algorithm</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
+
     <div class="container">
-        <section id="description" class="section">
-            <h1>Project 1: Integration of Mergesort & Insertion Sort</h1>
-            <p>In Mergesort, when the sizes of subarrays are small, the overhead of many recursive calls makes the algorithm inefficient. Therefore, in real use, we often combine Mergesort with Insertion Sort to come up with a hybrid sorting algorithm for better efficiency. The idea is to set a small integer S as a threshold for the size of subarrays. Once the size of a subarray in a recursive call of Mergesort is less than or equal to S, the algorithm will switch to Insertion Sort, which is efficient for small-sized input.</p>
-            <button id="next-to-team">Next</button>
+        <h1>Hybrid Sorting Algorithm: Merge + Insertion Sort</h1>
+
+        <section class="input-section">
+            <form id="arrayForm">
+                <label for="arraySize">Enter Array Size:</label>
+                <input type="number" id="arraySize" name="arraySize" value="1000" min="1000" max="1000000">
+                <button type="submit">Generate Graph</button>
+            </form>
         </section>
 
-        <section id="team" class="section hidden">
-            <h2>Meet the Team</h2>
-            <div class="team-member">
-                <img src="images/member1.png" alt="Member 1">
-                <p>Member 1 - Geeky Pixel Art</p>
-            </div>
-            <div class="team-member">
-                <img src="images/member2.png" alt="Member 2">
-                <p>Member 2 - Geeky Pixel Art</p>
-            </div>
-            <button id="next-to-algorithms">Next</button>
+        <section class="graph-section">
+            <h2>Graph: Merge Sort vs Hybrid Sort</h2>
+            <div id="graph"></div>
         </section>
 
-        <section id="algorithms" class="section hidden">
-            <h2>Algorithms</h2>
-            <h3>Mergesort</h3>
-            <pre><code>
-function mergeSort(arr) {
-    if (arr.length <= 1) return arr;
-    const mid = Math.floor(arr.length / 2);
-    const left = mergeSort(arr.slice(0, mid));
-    const right = mergeSort(arr.slice(mid));
-    return merge(left, right);
-}
+        <section class="code-block-section">
+            <h2>Code for Hybrid Sorting Algorithm</h2>
+            <pre>
+                <code>
+# Hybrid Sort Algorithm (Merge + Insertion)
+class SortingAlgorithms:
+    def __init__(self, threshold=20):
+        self.comparisons = 0
+        self.threshold = threshold
 
-function merge(left, right) {
-    let result = [], i = 0, j = 0;
-    while (i < left.length && j < right.length) {
-        if (left[i] < right[j]) result.push(left[i++]);
-        else result.push(right[j++]);
-    }
-    return result.concat(left.slice(i)).concat(right.slice(j));
-}
-            </code></pre>
-            <h3>Insertion Sort</h3>
-            <pre><code>
-function insertionSort(arr) {
-    for (let i = 1; i < arr.length; i++) {
-        let key = arr[i];
-        let j = i - 1;
-        while (j >= 0 && arr[j] > key) {
-            arr[j + 1] = arr[j];
-            j--;
-        }
-        arr[j + 1] = key;
-    }
-    return arr;
-}
-            </code></pre>
-            <h3>Hybrid Algorithm</h3>
-            <pre><code>
-function hybridSort(arr, threshold) {
-    if (arr.length <= threshold) return insertionSort(arr);
-    const mid = Math.floor(arr.length / 2);
-    return merge(hybridSort(arr.slice(0, mid), threshold), hybridSort(arr.slice(mid), threshold));
-}
-            </code></pre>
-            <button id="next-to-graph">Next</button>
-        </section>
+    def insertion_sort(self, arr, low, high):
+        for idx in range(low + 1, high + 1):
+            current_value = arr[idx]
+            position = idx - 1
+            while position >= low and arr[position] > current_value:
+                arr[position + 1] = arr[position]
+                position -= 1
+                self.comparisons += 1
+            arr[position + 1] = current_value
 
-        <section id="graph" class="section hidden">
-            <h2>Dynamic Graph</h2>
-            <label for="array-size">Array Size:</label>
-            <input type="number" id="array-size" value="1000">
-            <label for="threshold">Threshold (S):</label>
-            <input type="number" id="threshold" value="50">
-            <button id="generate-graph">Generate Graph</button>
-            <canvas id="graph-canvas" width="600" height="400"></canvas>
-            <p id="conclusion-text"></p>
-            <button id="next-to-conclusion">Next</button>
-        </section>
+    def merge_sort(self, arr):
+        self.recursive_merge(arr, 0, len(arr) - 1)
 
-        <section id="conclusion" class="section hidden">
-            <h2>Conclusion</h2>
-            <p>The graph above shows the number of key comparisons performed by the hybrid sorting algorithm. The comparison with Mergesort and Insertion Sort highlights the efficiency of the hybrid approach, particularly for large datasets.</p>
+    def recursive_merge(self, arr, left, right):
+        if left < right:
+            mid = (left + right) // 2
+            self.recursive_merge(arr, left, mid)
+            self.recursive_merge(arr, mid + 1, right)
+            self.merge(arr, left, mid, right)
+
+    def merge(self, arr, left, mid, right):
+        temp = []
+        i, j = left, mid + 1
+        while i <= mid and j <= right:
+            self.comparisons += 1
+            if arr[i] <= arr[j]:
+                temp.append(arr[i])
+                i += 1
+            else:
+                temp.append(arr[j])
+                j += 1
+        while i <= mid:
+            temp.append(arr[i])
+            i += 1
+        while j <= right:
+            temp.append(arr[j])
+            j += 1
+        for idx in range(len(temp)):
+            arr[left + idx] = temp[idx]
+
+    def hybrid_sort(self, arr, left, right):
+        if (right - left + 1) <= self.threshold:
+            self.insertion_sort(arr, left, right)
+        else:
+            if left < right:
+                mid = (left + right) // 2
+                self.hybrid_sort(arr, left, mid)
+                self.hybrid_sort(arr, mid + 1, right)
+                self.merge(arr, left, mid, right)
+                </code>
+            </pre>
         </section>
     </div>
-    <script src="script.js"></script>
+
+    <script src="scripts.js"></script>
 </body>
 </html>
