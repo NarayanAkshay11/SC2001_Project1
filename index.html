@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorting Algorithms Comparison</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        h1, h2, h3 {
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        pre {
+            background: #eaeaea;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        .image-box {
+            border: 2px solid black;
+            padding: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Sorting Algorithms Comparison</h1>
+
+        <h2>Algorithms Overview</h2>
+        <h3>Mergesort</h3>
+        <p>Mergesort is a divide-and-conquer algorithm that divides the input array into two halves, sorts them, and then merges them back together. It has a time complexity of O(n log n) in the worst case.</p>
+
+        <h3>Insertion Sort</h3>
+        <p>Insertion Sort builds the final sorted array one item at a time. It has a time complexity of O(n^2) in the worst case, making it inefficient on large lists.</p>
+
+        <h3>Hybrid Sort</h3>
+        <p>The Hybrid Sort combines Mergesort and Insertion Sort. For smaller arrays, it uses Insertion Sort and for larger arrays, it applies Mergesort. The best threshold value observed for this algorithm is around 13.8 or 16.3.</p>
+
+        <h2>Code Implementation</h2>
+        <pre>
+            <code>
+import random
+import time
+import matplotlib.pyplot as plt
+
+# Mergesort, Insertion Sort, and Hybrid Sort implementation goes here...
+            </code>
+        </pre>
+
+        <h2>Algorithm Comparison Images</h2>
+        
+        <div class="image-box">
+            <img src="sorting_time_comparison.png" alt="Sorting Time Comparison" style="max-width: 100%;">
+            <div>Time taken for sorting algorithms</div>
+        </div>
+
+        <div class="image-box">
+            <img src="sorting_comparisons.png" alt="Sorting Comparisons" style="max-width: 100%;">
+            <div>Number of comparisons made by sorting algorithms</div>
+        </div>
+
+        <div class="image-box">
+            <img src="time_complexity_vs_threshold.png" alt="Time Complexity vs Threshold" style="max-width: 100%;">
+            <div>Time complexity analysis against threshold values</div>
+        </div>
+
+        <div class="footer">
+            <p>Team Members: Akshay, [Other Team Members]</p>
+            <p>Course Code: [Your Course Code]</p>
+            <p>Course Name: [Your Course Name]</p>
+        </div>
+    </div>
+
+</body>
+</html>
