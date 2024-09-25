@@ -37,6 +37,7 @@
             border-radius: 5px;
             overflow-x: auto;
             white-space: pre-wrap;
+            margin: 10px 0;
         }
         input[type="number"], button {
             width: 100%;
@@ -51,9 +52,6 @@
             padding: 10px;
             background: #007bff;
             color: white;
-            position: relative;
-            bottom: 0;
-            width: 100%;
         }
         .graph-container {
             position: relative;
@@ -81,14 +79,54 @@
 
         <h2>Code Snippets</h2>
         <pre><code>class InsertionSort:
-    ...
-</code></pre>
+    def insertion_sort(self, arr):
+        for i in range(1, len(arr)):
+            key = arr[i]
+            j = i - 1
+            while j >= 0 and arr[j] > key:
+                arr[j + 1] = arr[j]
+                j -= 1
+            arr[j + 1] = key</code></pre>
+        
         <pre><code>class MergeSort:
-    ...
-</code></pre>
+    def merge_sort(self, arr):
+        if len(arr) > 1:
+            mid = len(arr) // 2
+            left_half = arr[:mid]
+            right_half = arr[mid:]
+
+            self.merge_sort(left_half)
+            self.merge_sort(right_half)
+
+            i = j = k = 0
+            while i < len(left_half) and j < len(right_half):
+                if left_half[i] < right_half[j]:
+                    arr[k] = left_half[i]
+                    i += 1
+                else:
+                    arr[k] = right_half[j]
+                    j += 1
+                k += 1
+
+            while i < len(left_half):
+                arr[k] = left_half[i]
+                i += 1
+                k += 1
+
+            while j < len(right_half):
+                arr[k] = right_half[j]
+                j += 1
+                k += 1</code></pre>
+        
         <pre><code>class HybridSort(MergeSort):
-    ...
-</code></pre>
+    def __init__(self, threshold):
+        self.threshold = threshold
+
+    def hybrid_sort(self, arr):
+        if len(arr) <= self.threshold:
+            self.insertion_sort(arr)
+        else:
+            super().merge_sort(arr)</code></pre>
 
         <h2>Input Size for Analysis</h2>
         <input type="number" id="sizeInput" placeholder="Enter array size (1000 to 10 million)">
@@ -118,7 +156,7 @@
         });
 
         async function analyzeAlgorithms(size) {
-            const response = await fetch('/api/analyze?size=' + size);
+            const response = await fetch(`/api/analyze?size=${size}`);
             const data = await response.json();
 
             if (chart) {
@@ -128,29 +166,30 @@
             chart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['Insertion', 'Merge', 'Hybrid'],
+                    labels: data.sizes,
                     datasets: [
                         {
                             label: 'Insertion Sort Comparisons',
-                            data: data.insertion.map(item => item[0]),
+                            data: data.insertion,
                             borderColor: 'rgba(255, 99, 132, 1)',
                             fill: false,
                         },
                         {
                             label: 'Merge Sort Comparisons',
-                            data: data.merge.map(item => item[0]),
+                            data: data.merge,
                             borderColor: 'rgba(54, 162, 235, 1)',
                             fill: false,
                         },
                         {
                             label: 'Hybrid Sort Comparisons',
-                            data: data.hybrid.map(item => item[0]),
+                            data: data.hybrid,
                             borderColor: 'rgba(75, 192, 192, 1)',
                             fill: false,
                         }
                     ]
                 },
                 options: {
+                    responsive: true,
                     scales: {
                         x: {
                             title: {
@@ -162,7 +201,8 @@
                             title: {
                                 display: true,
                                 text: 'Number of Comparisons'
-                            }
+                            },
+                            beginAtZero: true
                         }
                     }
                 }
