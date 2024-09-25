@@ -1,112 +1,87 @@
+from flask import Flask, request, jsonify
 import random
-import time
+
+app = Flask(__name__)
 
 class InsertionSort:
-    def __init__(self):
-        self.comp = 0  # Comparison counter
-
-    def sort(self, arr):
+    def insertion_sort(self, arr):
+        comparisons = 0
         for i in range(1, len(arr)):
             key = arr[i]
             j = i - 1
             while j >= 0 and arr[j] > key:
-                self.comp += 1
                 arr[j + 1] = arr[j]
                 j -= 1
+                comparisons += 1
             arr[j + 1] = key
-            self.comp += 1  # For the last comparison
-
-    def reset(self):
-        self.comp = 0
+            comparisons += 1  # For the last comparison where the while condition fails
+        return comparisons
 
 class MergeSort:
-    def __init__(self):
-        self.comp = 0  # Comparison counter
+    def merge_sort(self, arr):
+        comparisons = 0
+        if len(arr) > 1:
+            mid = len(arr) // 2
+            left_half = arr[:mid]
+            right_half = arr[mid:]
 
-    def sort(self, arr):
-        self._merge_sort(arr, 0, len(arr) - 1)
+            comparisons += self.merge_sort(left_half)
+            comparisons += self.merge_sort(right_half)
 
-    def _merge_sort(self, arr, left, right):
-        if left < right:
-            mid = (left + right) // 2
-            self._merge_sort(arr, left, mid)
-            self._merge_sort(arr, mid + 1, right)
-            self.merge(arr, left, mid, right)
+            i = j = k = 0
 
-    def merge(self, arr, left, mid, right):
-        left_sub = arr[left:mid + 1]
-        right_sub = arr[mid + 1:right + 1]
-        i, j, k = 0, 0, left
-        
-        while i < len(left_sub) and j < len(right_sub):
-            self.comp += 1
-            if left_sub[i] <= right_sub[j]:
-                arr[k] = left_sub[i]
+            while i < len(left_half) and j < len(right_half):
+                if left_half[i] < right_half[j]:
+                    arr[k] = left_half[i]
+                    i += 1
+                else:
+                    arr[k] = right_half[j]
+                    j += 1
+                k += 1
+                comparisons += 1  # Count the comparison
+
+            while i < len(left_half):
+                arr[k] = left_half[i]
                 i += 1
-            else:
-                arr[k] = right_sub[j]
+                k += 1
+
+            while j < len(right_half):
+                arr[k] = right_half[j]
                 j += 1
-            k += 1
+                k += 1
 
-        while i < len(left_sub):
-            arr[k] = left_sub[i]
-            i += 1
-            k += 1
-
-        while j < len(right_sub):
-            arr[k] = right_sub[j]
-            j += 1
-            k += 1
-
-    def reset(self):
-        self.comp = 0
+        return comparisons
 
 class HybridSort(MergeSort):
     def __init__(self, threshold):
-        super().__init__()
         self.threshold = threshold
 
-    def _merge_sort(self, arr, left, right):
-        if right - left + 1 <= self.threshold:
+    def hybrid_sort(self, arr):
+        if len(arr) <= self.threshold:
             insertion_sort = InsertionSort()
-            insertion_sort.sort(arr[left:right + 1])
-            self.comp += insertion_sort.comp
+            return insertion_sort.insertion_sort(arr)
         else:
-            super()._merge_sort(arr, left, right)
+            return self.merge_sort(arr)
 
-def generate_data(size):
-    return [random.randint(1, 10000) for _ in range(size)]
+@app.route('/api/analyze', methods=['GET'])
+def analyze():
+    size = int(request.args.get('size'))
+    arr = [random.randint(0, 10000) for _ in range(size)]
 
-def analyze_algorithms(size, threshold):
     insertion_sort = InsertionSort()
     merge_sort = MergeSort()
-    hybrid_sort = HybridSort(threshold)
+    hybrid_sort = HybridSort(threshold=10)  # Example threshold for hybrid sort
 
-    data = generate_data(size)
+    insertion_comparisons = insertion_sort.insertion_sort(arr.copy())
+    merge_comparisons = merge_sort.merge_sort(arr.copy())
+    hybrid_comparisons = hybrid_sort.hybrid_sort(arr.copy())
 
-    # Analyze Insertion Sort
-    insertion_sort.reset()
-    start_time = time.time()
-    insertion_sort.sort(data.copy())
-    insertion_time = time.time() - start_time
-    insertion_comparisons = insertion_sort.comp
+    return jsonify({
+        'sizes': [size],
+        'insertion': [insertion_comparisons],
+        'merge': [merge_comparisons],
+        'hybrid': [hybrid_comparisons],
+    })
 
-    # Analyze Merge Sort
-    merge_sort.reset()
-    start_time = time.time()
-    merge_sort.sort(data.copy())
-    merge_time = time.time() - start_time
-    merge_comparisons = merge_sort.comp
-
-    # Analyze Hybrid Sort
-    hybrid_sort.reset()
-    start_time = time.time()
-    hybrid_sort.sort(data.copy())
-    hybrid_time = time.time() - start_time
-    hybrid_comparisons = hybrid_sort.comp
-
-    return {
-        "insertion": (insertion_comparisons, insertion_time),
-        "merge": (merge_comparisons, merge_time),
-        "hybrid": (hybrid_comparisons, hybrid_time)
-    }
+if __name__ == '__main__':
+    app.run(debug=True)
